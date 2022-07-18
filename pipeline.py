@@ -100,11 +100,13 @@ def job_details(dataframe):
 ################## Timestamp Convert #######################
 
 def timestamp_convert(dataframe):
+
   dataframe = dataframe.loc[dataframe['createdAt'].notnull()]
   at_date = [i for i in dataframe.columns if 'At' in i]
   for col in at_date:
     dataframe[col] = dataframe[col].apply(lambda d: datetime.utcfromtimestamp(int(d)/1000).strftime('%Y-%m-%d %H:%M:%S'))
     dataframe[col]= pd.to_datetime(dataframe[col])
+
   return dataframe
 
 
