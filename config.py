@@ -38,6 +38,7 @@ def sqlcol(dfparam):
 
 ################## Jobs and Country Informations ##################
 jobs = ['engineer', 'scientist', 'analyst']
+
 country = [['geoUrn-%3Eurn%3Ali%3Afs_geo%3A102105699,locationFallback-%3ETurkey', 'Turkey'],
            ['geoUrn-%3Eurn%3Ali%3Afs_geo%3A103644278,locationFallback-%3EUnited%20States', 'USA'],
            ['geoUrn-%3Eurn%3Ali%3Afs_geo%3A101282230,locationFallback-%3EGermany', 'Germany']]
@@ -47,15 +48,14 @@ country = [['geoUrn-%3Eurn%3Ali%3Afs_geo%3A102105699,locationFallback-%3ETurkey'
 ################## Cookies and Headers ##################
 
 
-cookies = {
 
-    'JSESSIONID': '"ajax:0872958190215893462"',
-    'li_at': 'AQEDASq5JWoDJalFAAABgfJOvZ8AAAGCFltBn00AVJc-6mNzmn-3QZm4dwHtlPB40vOZqiQJXkCjv-8f-aa3MQ0QOryBotqPTM_3L46A0_P7ADYPkOuqL63pWkwwoh-fO3b898Z7aiRHFWTUPDNj1Sqq',
+cookies = {
+    'li_at': 'AQEDATL2FeoFmE9iAAABghGkAiYAAAGCNbCGJk4AhhRO2Xtu79BGl8Q6iCjxVp_dFnVd13y13QWAlij_ZJYgAGnE9j0LNcuWzCSZofQu1G89rcvawAsoNMgMF1_LOHi-pFTOyVWLkaUBAWeIGMvWsIVT',
+    'JSESSIONID': '"ajax:8483639390045413169"'
 }
 
 headers = {
-    'csrf-token': 'ajax:0872958190215893462',
-    'x-restli-protocol-version': '2.0.0',
+    'csrf-token': 'ajax:8483639390045413169', 'x-restli-protocol-version': '2.0.0',
 }
 
 headers2 = {
