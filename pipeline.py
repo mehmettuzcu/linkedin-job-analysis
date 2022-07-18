@@ -77,16 +77,16 @@ def job_details(dataframe):
 
     for i in dataframe['jobPostingId']:
       try:
-        response2 = requests.get(f'https://www.linkedin.com/voyager/api/jobs/jobPostings/{i}', cookies=cookies, headers=headers2)
+        response = requests.get(f'https://www.linkedin.com/voyager/api/jobs/jobPostings/{i}', cookies=cookies, headers=headers2)
       except:
         print("error")
-      data2 = response2.json()
+      data = response.json()
       # print(data)
       # print(response.status_code)
 
       try:
-        dataframe = pd.json_normalize(data2['data'])
-        detail_data = detail_data.append(dataframe[['jobPostingId', 'title',  'localizedCostPerApplicantChargeableRegion',  'originalListedAt', 'expireAt', 'createdAt', 'listedAt', 'views', 'applies','formattedLocation', 'jobPostingUrl', 'jobFunctions', 'jobState', 'formattedEmploymentStatus',  'description.text' ]])
+        dataframe_data = pd.json_normalize(data['data'])
+        detail_data = detail_data.append(dataframe_data[['jobPostingId', 'title',  'localizedCostPerApplicantChargeableRegion',  'originalListedAt', 'expireAt', 'createdAt', 'listedAt', 'views', 'applies','formattedLocation', 'jobPostingUrl', 'jobState', 'formattedEmploymentStatus',  'description.text' ]])
       except:
         print("Error on:", i)
 

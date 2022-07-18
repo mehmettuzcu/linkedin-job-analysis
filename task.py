@@ -6,7 +6,6 @@ try:
 except Exception as e:
     print("Jobs Posting Id Scraping is Error")
 
-
 try:
     df_detail = job_details(jobId)
     print("Jobs Detail Scraping is Succesfully")
@@ -19,4 +18,15 @@ try:
 except Exception as e:
     print("Timestamp converting is Error")
 
-df_detail.head()
+try:
+    engine.connect()
+    df_timestamp.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace')
+    df_timestamp.to_sql(name='linkedinJobs', con=engine, if_exists='append')
+    print("Timestamp converting is Succesfully")
+except Exception as e:
+    print("Timestamp converting is Error")
+
+
+
+df_timestamp.head()
+df_detail.info()
