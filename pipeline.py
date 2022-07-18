@@ -32,7 +32,7 @@ def scrap_jobPostingId(loop=25):
         for i in range(0, loop_number, 25):
           response = requests.get(f'https://www.linkedin.com/voyager/api/search/hits?decorationId=com.linkedin.voyager.deco.jserp.WebJobSearchHitWithSalary-25&count=25&filters=List(timePostedRange-%3Er86400,distance-%3E25.0,sortBy-%3ER,{ctr[0]}, resultType-%3EJOBS)&keywords=data%20{j}&origin=JOB_SEARCH_PAGE_OTHER_ENTRY&q=jserpFilters&queryContext=List(primaryHitType-%3EJOBS,spellCorrectionEnabled-%3Etrue)&start={i}&skip={i}&topNRequestedFlavors=List(HIDDEN_GEM,IN_NETWORK,SCHOOL_RECRUIT,COMPANY_RECRUIT,SALARY,JOB_SEEKER_QUALIFIED,PRE_SCREENING_QUESTIONS,SKILL_ASSESSMENTS,ACTIVELY_HIRING_COMPANY,TOP_APPLICANT)', cookies=cookies, headers=headers)
           data = response.json()
-          print(response.status_code)
+          # print(response.status_code)
     
           for i in range(0,25):
             try:
@@ -92,6 +92,7 @@ def job_details(dataframe):
 
     detail_data["applies"] = detail_data["applies"].astype(int)
     df_details = pd.merge(dataframe, detail_data, how="left", on="jobPostingId")
+    df_details.columns = df_details.columns.str.replace('.', '_')
 
     return df_details
 
