@@ -8,9 +8,9 @@ print(f"""
 Start Time: {begin}
 """)
 
-def daily():
+def daily(loop=500):
     try:
-        jobId = scrap_jobPostingId(loop=500)
+        jobId = scrap_jobPostingId(loop)
         print("Jobs Posting Id Scraping is Succesfully")
     except Exception as e:
         print("Jobs Posting Id Scraping is Error")
