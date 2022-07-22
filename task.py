@@ -20,6 +20,7 @@ def daily(loop=500):
         print("Jobs Detail Scraping is Succesfully")
     except Exception as e:
         print("Jobs Detail Scraping is Error")
+        print(e)
 
     try:
         df_timestamp = timestamp_convert(df_detail)
@@ -34,7 +35,7 @@ def daily(loop=500):
         # df_timestamp.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace', index=False, dtype=cols_dtype)
         df_timestamp.to_sql(name='linkedinJobs', con=engine, index=False, if_exists='append',  dtype=cols_dtype)
 
-        print("Dataframe Sent to Database Succesfully")
+        print("Dataframe Sent to Datab se Succesfully")
     except Exception as e:
         print("Dataframe Sent to Database Error!")
 

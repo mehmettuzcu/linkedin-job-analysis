@@ -19,7 +19,7 @@ pd.set_option('display.max_rows', None)
 ################## jobPostingId #######################
 
 
-def scrap_jobPostingId(loop=25):
+def scrap_jobPostingId(loop=5):
 
     jobPostingId = []
     company_name= []
@@ -77,7 +77,7 @@ def job_details(dataframe):
 
     for i in dataframe['jobPostingId']:
       try:
-        response2 = requests.get(f'https://www.linkedin.com/voyager/api/jobs/jobPostings/3116608643', cookies=cookies2, headers=headers2)
+        response2 = requests.get(f'https://www.linkedin.com/voyager/api/jobs/jobPostings/{i}', cookies=cookies2, headers=headers2)
       except:
         print("error")
       data2 = response2.json()

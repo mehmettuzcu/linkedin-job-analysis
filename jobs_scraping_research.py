@@ -20,7 +20,7 @@ pd.set_option('display.max_rows', None)
 ################## jobPostingId #######################
 jobPostingId = []
 company_name= []
-loop_number = 25
+loop_number = 5
 ctr_name = []
 job_category = []
 
@@ -84,8 +84,8 @@ for i in df['jobPostingId']:
   try:
     dataframe = pd.json_normalize(data['data'])
     detail_data = detail_data.append(dataframe[['jobPostingId', 'title',  'localizedCostPerApplicantChargeableRegion',  'originalListedAt', 'expireAt', 'createdAt', 'listedAt', 'views', 'applies','formattedLocation', 'jobPostingUrl', 'jobFunctions', 'jobState', 'formattedEmploymentStatus',  'description.text' ]])
-  except:
-    print("Error on:", i)
+  except Exception as e:
+    print("Error on:", i, e)
 
 detail_data["applies"] = detail_data["applies"].astype(int)
 jobs_details = pd.merge(df, detail_data, how="left", on="jobPostingId")
