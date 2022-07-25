@@ -88,7 +88,7 @@ def job_details(dataframe):
         dataframe_data = pd.json_normalize(data2['data'])
         detail_data = detail_data.append(dataframe_data[['jobPostingId', 'title',  'localizedCostPerApplicantChargeableRegion',  'originalListedAt', 'expireAt', 'createdAt', 'listedAt', 'views', 'applies', 'formattedLocation', 'jobPostingUrl', 'jobState', 'formattedEmploymentStatus',  'description.text' ]])
       except:
-        print("Error on:", i)
+        print("Request Error")
 
     detail_data["applies"] = detail_data["applies"].astype(int)
     df_details = pd.merge(dataframe, detail_data, how="left", on="jobPostingId")
