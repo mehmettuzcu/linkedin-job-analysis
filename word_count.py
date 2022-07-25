@@ -9,12 +9,10 @@ import pandas as pd
 from PIL import Image
 from nltk.corpus import stopwords
 
-
 filterwarnings('ignore')
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 200)
 pd.set_option('display.float_format', lambda x: '%.2f' % x)
-
 
 ##################################################
 # 1. Text Preprocessing
