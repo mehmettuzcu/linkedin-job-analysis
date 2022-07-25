@@ -1,14 +1,9 @@
 import requests
 import numpy as np
 import pandas as pd
-from datetime import date, datetime, timedelta
+from datetime import datetime
 import warnings
-import sqlalchemy
-from sqlalchemy import create_engine
-import os
-import argparse
 from config import *
-import re
 
 warnings.simplefilter(action='ignore', category=Warning)
 pd.set_option('display.max_columns', None)
@@ -20,9 +15,13 @@ pd.set_option('display.max_rows', None)
 ################## jobPostingId #######################
 jobPostingId = []
 company_name= []
-loop_number = 5
+loop_number = 100
 ctr_name = []
 job_category = []
+
+jobs = ['engineer']
+
+country = [['geoUrn-%3Eurn%3Ali%3Afs_geo%3A102105699,locationFallback-%3ETurkey', 'Turkey']]
 
 for ctr in country:
   for j in jobs:
