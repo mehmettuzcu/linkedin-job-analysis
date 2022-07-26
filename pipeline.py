@@ -19,7 +19,7 @@ pd.set_option('display.max_rows', None)
 ################## jobPostingId #######################
 
 
-def scrap_jobPostingId(loop=5):
+def scrap_jobPostingId(loop=500):
 
     jobPostingId = []
     company_name= []
@@ -111,3 +111,4 @@ def timestamp_convert(dataframe):
   return dataframe
 
 
+# df_timestamp = timestamp_convert(df_detail)

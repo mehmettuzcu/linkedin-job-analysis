@@ -50,17 +50,16 @@ country = [['geoUrn-%3Eurn%3Ali%3Afs_geo%3A102105699,locationFallback-%3ETurkey'
 
 
 cookies = {
-    'li_at': 'AQEDASq5JWoDZthhAAABghGGS7IAAAGCNZLPsk0AmWg1wWE_f1PbDajY_LKsZbyH8xanpKX57Vz1kuCyG6ySVrtI71noBjx7cSCcQ8MzmjUxUv83ubv_qKsnej4Nar7UZpCPn1-lqUYOQ5GVIZBXNr1x',
-    'JSESSIONID': '"ajax:8174042621654042084"'
+    'JSESSIONID': '"ajax:8174042621654042084"',
+    'li_at': 'AQEDASq5JWoF56CdAAABgjWlbUgAAAGCWbHxSE0AsS5kxVnWlV0l91m4kvxJQpuaS-uXCenQcM1NDi8jI0y53Dk4fPFMRvY907LeBYkqKa1D_wi7OFwwxMCKSHM-qJbC_eV3YHkCFD6uK5YQP2cvK1k2',
+
 }
 
-headers = {
-    'csrf-token': 'ajax:8174042621654042084',
-    'x-restli-protocol-version': '2.0.0',
+headers = {'csrf-token': 'ajax:8174042621654042084', 'x-restli-protocol-version': '2.0.0',
 }
 
 cookies2 = {
-    'li_at': 'AQEDASq5JWoDZthhAAABghGGS7IAAAGCNZLPsk0AmWg1wWE_f1PbDajY_LKsZbyH8xanpKX57Vz1kuCyG6ySVrtI71noBjx7cSCcQ8MzmjUxUv83ubv_qKsnej4Nar7UZpCPn1-lqUYOQ5GVIZBXNr1x',
+    'li_at': 'AQEDASq5JWoF56CdAAABgjWlbUgAAAGCWbHxSE0AsS5kxVnWlV0l91m4kvxJQpuaS-uXCenQcM1NDi8jI0y53Dk4fPFMRvY907LeBYkqKa1D_wi7OFwwxMCKSHM-qJbC_eV3YHkCFD6uK5YQP2cvK1k2',
     'JSESSIONID': '"ajax:8174042621654042084"'
 }
 
