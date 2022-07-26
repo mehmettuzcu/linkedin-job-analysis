@@ -14,14 +14,10 @@ pd.set_option('display.max_rows', None)
 
 ################## jobPostingId #######################
 jobPostingId = []
-company_name= []
-loop_number = 100
+company_name = []
+loop_number = 5000
 ctr_name = []
 job_category = []
-
-jobs = ['engineer']
-
-country = [['geoUrn-%3Eurn%3Ali%3Afs_geo%3A102105699,locationFallback-%3ETurkey', 'Turkey']]
 
 for ctr in country:
   for j in jobs:
@@ -29,7 +25,6 @@ for ctr in country:
       response = requests.get(f'https://www.linkedin.com/voyager/api/search/hits?decorationId=com.linkedin.voyager.deco.jserp.WebJobSearchHitWithSalary-25&count=25&filters=List(timePostedRange-%3Er86400,distance-%3E25.0,sortBy-%3ER,{ctr[0]}, resultType-%3EJOBS)&keywords=data%20{j}&origin=JOB_SEARCH_PAGE_OTHER_ENTRY&q=jserpFilters&queryContext=List(primaryHitType-%3EJOBS,spellCorrectionEnabled-%3Etrue)&start={i}&skip={i}&topNRequestedFlavors=List(HIDDEN_GEM,IN_NETWORK,SCHOOL_RECRUIT,COMPANY_RECRUIT,SALARY,JOB_SEEKER_QUALIFIED,PRE_SCREENING_QUESTIONS,SKILL_ASSESSMENTS,ACTIVELY_HIRING_COMPANY,TOP_APPLICANT)', cookies=cookies, headers=headers)
       data = response.json()
       print(response.status_code)
-
       for i in range(0,25):
         try:
           jobPostingId.append(data['elements'][i]['hitInfo']['com.linkedin.voyager.deco.jserp.WebSearchJobJserpWithSalary']['jobPostingResolutionResult']['jobPostingId'])
@@ -66,6 +61,7 @@ df['jobPostingId'] = df['jobPostingId'].apply(np.int64)
 df.head()
 
 
+
 #######################################
 
 
@@ -73,25 +69,28 @@ detail_data = pd.DataFrame()
 
 for i in df['jobPostingId']:
   try:
-    response = requests.get(f'https://www.linkedin.com/voyager/api/jobs/jobPostings/{i}', cookies=cookies, headers=headers2)
+    response = requests.get(f'https://www.linkedin.com/voyager/api/jobs/jobPostings/{i}', cookies=cookies2, headers=headers2)
   except:
-    print("error")
-  data = response.json()
+    print("Request Error")
+  data2 = response.json()
   # print(data)
   # print(response.status_code)
 
   try:
-    dataframe = pd.json_normalize(data['data'])
-    detail_data = detail_data.append(dataframe[['jobPostingId', 'title',  'localizedCostPerApplicantChargeableRegion',  'originalListedAt', 'expireAt', 'createdAt', 'listedAt', 'views', 'applies','formattedLocation', 'jobPostingUrl', 'jobFunctions', 'jobState', 'formattedEmploymentStatus',  'description.text' ]])
-  except Exception as e:
-    print("Error on:", i, e)
+    df_data = pd.json_normalize(data2['data'])
+    detail_data = detail_data.append(df_data[['jobPostingId', 'title',  'localizedCostPerApplicantChargeableRegion',  'originalListedAt', 'expireAt', 'createdAt', 'listedAt', 'views', 'applies', 'formattedLocation', 'jobPostingUrl', 'jobState', 'formattedEmploymentStatus',  'description.text' ]])
+  except:
+    pass
 
 detail_data["applies"] = detail_data["applies"].astype(int)
-jobs_details = pd.merge(df, detail_data, how="left", on="jobPostingId")
+df_details = pd.merge(df, detail_data, how="left", on="jobPostingId")
+df_details.columns = df_details.columns.str.replace('.', '_')
 
-jobs_details.head()
+df_details.head()
 
 def timestamp_convert(dataframe):
+
+  dataframe = dataframe.loc[dataframe['createdAt'].notnull()]
   at_date = [i for i in dataframe.columns if 'At' in i]
   for col in at_date:
     dataframe[col] = dataframe[col].apply(lambda d: datetime.utcfromtimestamp(int(d)/1000).strftime('%Y-%m-%d %H:%M:%S'))
@@ -99,13 +98,16 @@ def timestamp_convert(dataframe):
 
   return dataframe
 
-jobs_details2 = jobs_details.loc[jobs_details['createdAt'].notnull()]
+
+jobs_details2 = df_details.loc[df_details['createdAt'].notnull()]
 
 
 jobs_details3 = timestamp_convert(jobs_details2)
 
-jobs_details3.info()
-
 jobs_details3.head()
 
-jobs_details3['localizedCostPerApplicantChargeableRegion'].unique()
+
+cols_dtype = sqlcol(jobs_details3)
+# df_timestamp.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace', index=False, dtype=cols_dtype)
+jobs_details3.to_sql(name='linkedinJobs', con=engine, index=False, if_exists='append',  dtype=cols_dtype)
+print("Dataframe Sent to Datab se Succesfully")
