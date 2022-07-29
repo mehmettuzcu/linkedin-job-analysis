@@ -2,8 +2,8 @@ from sqlalchemy import create_engine
 import sqlalchemy
 
 ################## Connecting string ##################
-engine = create_engine(f'postgresql://root:root@localhost:5432/test')
-engine.connect()
+#engine = create_engine(f'postgresql://root:root@localhost:5432/test')
+# engine.connect()
 
 
 def sqlcol(dfparam):

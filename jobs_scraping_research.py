@@ -15,7 +15,7 @@ pd.set_option('display.max_rows', None)
 ################## jobPostingId #######################
 jobPostingId = []
 company_name = []
-loop_number = 5000
+loop_number = 5
 ctr_name = []
 job_category = []
 
