@@ -52,7 +52,7 @@ def scrap_jobPostingId(loop=25):
             job_category.append(f'Data Engineer')
           except:
             job_category.append(np.NaN)
-      print('finished')
+      # print('finished')
 
 
 
@@ -65,6 +65,11 @@ def scrap_jobPostingId(loop=25):
     dataframe = dataframe.loc[dataframe['jobPostingId'].notnull()]
     dataframe['jobPostingId'] = dataframe['jobPostingId'].apply(np.int64)
 
+    sql = """select "jobPostingId" from "linkedinJobs";"""
+    sqldf = pd.read_sql(sql,con=engine)
+    sqldf.drop_duplicates(keep='first', subset=['jobPostingId'], inplace=True)
+    ids = sqldf["jobPostingId"].to_list()
+    dataframe = dataframe[~dataframe['jobPostingId'].isin(ids)]
     return dataframe
 
 # jobId = scrap_jobPostingId()
