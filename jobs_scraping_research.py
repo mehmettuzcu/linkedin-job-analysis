@@ -15,7 +15,7 @@ pd.set_option('display.max_rows', None)
 ################## jobPostingId #######################
 jobPostingId = []
 company_name = []
-loop_number = 5000
+loop_number = 500
 ctr_name = []
 job_category = []
 
@@ -59,7 +59,7 @@ df = df.loc[df['jobPostingId'].notnull()]
 df['jobPostingId'] = df['jobPostingId'].apply(np.int64)
 
 df.head()
-
+df.info()
 
 
 #######################################
@@ -87,6 +87,8 @@ df_details = pd.merge(df, detail_data, how="left", on="jobPostingId")
 df_details.columns = df_details.columns.str.replace('.', '_')
 
 df_details.head()
+df_details.info()
+df_details.tail()
 
 def timestamp_convert(dataframe):
 
@@ -105,9 +107,9 @@ jobs_details2 = df_details.loc[df_details['createdAt'].notnull()]
 jobs_details3 = timestamp_convert(jobs_details2)
 
 jobs_details3.head()
-
+jobs_details3.info()
 
 cols_dtype = sqlcol(jobs_details3)
-# df_timestamp.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace', index=False, dtype=cols_dtype)
+# df_timestamp.head(n=0).to_sql(name='linkedinJobs', con =engine, if_exists='replace', index=False, dtype=cols_dtype)
 jobs_details3.to_sql(name='linkedinJobs', con=engine, index=False, if_exists='append',  dtype=cols_dtype)
-print("Dataframe Sent to Datab se Succesfully")
+print("Dataframe Sent to Databse Succesfully")
