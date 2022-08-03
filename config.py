@@ -3,7 +3,17 @@ import sqlalchemy
 
 ################## Connecting string ##################
 engine = create_engine(f'postgresql://root:root@localhost:5432/test')
-engine.connect()
+
+creds = {'user': 'tuzcu',
+            'passwd': 'mehmet123',
+            'host': '54.93.103.1',
+            'port': 3306,
+            'db': 'test'}
+
+# MySQL conection string.
+connstr = 'mysql+mysqlconnector://{user}:{passwd}@{host}:{port}/{db}'
+
+mysql_conn = create_engine(connstr.format(**creds))
 
 
 def sqlcol(dfparam):
