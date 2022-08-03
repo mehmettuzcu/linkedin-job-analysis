@@ -16,6 +16,12 @@ connstr = 'mysql+mysqlconnector://{user}:{passwd}@{host}:{port}/{db}'
 mysql_conn = create_engine(connstr.format(**creds))
 
 
+database_username = 'tuzcu'
+database_password = 'mehmet123'
+database_ip='54.93.103.1'
+database_name='test'
+database_port = '3306'
+
 def sqlcol(dfparam):
     dtypedict = {}
     for i,j in zip(dfparam.columns, dfparam.dtypes):
