@@ -8,6 +8,8 @@ from sqlalchemy import create_engine
 import os
 import argparse
 from config import *
+from warnings import filterwarnings
+
 
 warnings.simplefilter(action='ignore', category=Warning)
 pd.set_option('display.max_columns', None)
@@ -24,6 +26,31 @@ df.info()
 cols_dtype = sqlcol(df)
 df.to_sql(name='linkedinJobs', con=mysql_conn, index=False, if_exists='replace',  dtype=cols_dtype)
 df.to_sql(name='linkedinJobs', con=mysql_conn, index=False, if_exists='append',  dtype=cols_dtype, chunksize=1000)
+
+##################################################
+# 1. Text Preprocessing
+##################################################
+###############################
+# Normalizing Case Folding
+###############################
+
+df['description_text'] = df['description_text'].str.lower()
+
+###############################
+# Punctuations
+###############################
+
+df['description_text'] = df['description_text'].str.replace('[^\w\s]', '')
+
+###############################
+# Numbers
+###############################
+
+df['description_text'] = df['description_text'].str.replace('\d', '')
+
+###############################
+# Stopwords
+###############################
 
 database_connection = sqlalchemy.create_engine(
     'mysql+mysqlconnector://{}:{}@{}:{}/{}'.format(
@@ -43,3 +70,5 @@ df.to_sql(
 )
 
 pd.read_sql_query(sql='SHOW TABLES', con=database_connection)
+
+df['description_text'][0:1].to_excel("aaa.xlsx")
