@@ -15,52 +15,55 @@ pd.set_option('display.max_rows', None)
 ################## jobPostingId #######################
 jobPostingId = []
 company_name = []
-loop_number = 5
+loop_number = 25
+jobCategory = []
 ctr_name = []
-job_category = []
 
-for ctr in country:
-  for j in jobs:
-    for i in range(0, loop_number, 25):
-      response = requests.get(f'https://www.linkedin.com/voyager/api/search/hits?decorationId=com.linkedin.voyager.deco.jserp.WebJobSearchHitWithSalary-25&count=25&filters=List(timePostedRange-%3Er86400,distance-%3E25.0,sortBy-%3ER,{ctr[0]}, resultType-%3EJOBS)&keywords=data%20{j}&origin=JOB_SEARCH_PAGE_OTHER_ENTRY&q=jserpFilters&queryContext=List(primaryHitType-%3EJOBS,spellCorrectionEnabled-%3Etrue)&start={i}&skip={i}&topNRequestedFlavors=List(HIDDEN_GEM,IN_NETWORK,SCHOOL_RECRUIT,COMPANY_RECRUIT,SALARY,JOB_SEEKER_QUALIFIED,PRE_SCREENING_QUESTIONS,SKILL_ASSESSMENTS,ACTIVELY_HIRING_COMPANY,TOP_APPLICANT)', cookies=cookies, headers=headers)
-      data = response.json()
-      print(response.status_code)
-      for i in range(0,25):
-        try:
-          jobPostingId.append(data['elements'][i]['hitInfo']['com.linkedin.voyager.deco.jserp.WebSearchJobJserpWithSalary']['jobPostingResolutionResult']['jobPostingId'])
-        except:
-          jobPostingId.append(np.NaN)
 
-        try:
-          company_name.append(data['elements'][i]['hitInfo']['com.linkedin.voyager.deco.jserp.WebSearchJobJserpWithSalary']['jobPostingResolutionResult']['companyDetails']['com.linkedin.voyager.deco.jserp.WebJobPostingWithCompanyName']['companyResolutionResult']['name'])
-        except:
-          company_name.append(np.NaN)
+for item in country.items():
+  for i in range(0, loop_number, 25):
+    response = requests.get(
+        f'https://www.linkedin.com/voyager/api/search/hits?decorationId=com.linkedin.voyager.deco.jserp.WebJobSearchHitWithSalary-25&count=25&filters=List({item[1]},resultType-%3EJOBS)&keywords=data%20engineer&origin=JOB_SEARCH_PAGE_OTHER_ENTRY&q=jserpFilters&queryContext=List(primaryHitType-%3EJOBS,spellCorrectionEnabled-%3Etrue)&start={i}&skip={i}&topNRequestedFlavors=List(HIDDEN_GEM,IN_NETWORK,SCHOOL_RECRUIT,COMPANY_RECRUIT,SALARY,JOB_SEEKER_QUALIFIED,PRE_SCREENING_QUESTIONS,SKILL_ASSESSMENTS,ACTIVELY_HIRING_COMPANY,TOP_APPLICANT)'
+        , cookies=cookies, headers=headers)
+    data = response.json()
+    print(response.status_code)
+    for i in range(0,25):
+      try:
+        jobPostingId.append(data['elements'][i]['hitInfo']['com.linkedin.voyager.deco.jserp.WebSearchJobJserpWithSalary']['jobPostingResolutionResult']['jobPostingId'])
+      except:
+        jobPostingId.append(np.NaN)
 
-        try:
-          ctr_name.append(ctr[1])
-        except:
-          ctr_name.append(np.NaN)
+      try:
+        company_name.append(data['elements'][i]['hitInfo']['com.linkedin.voyager.deco.jserp.WebSearchJobJserpWithSalary']['jobPostingResolutionResult']['companyDetails']['com.linkedin.voyager.deco.jserp.WebJobPostingWithCompanyName']['companyResolutionResult']['name'])
+      except:
+        company_name.append(np.NaN)
 
-        try:
-          job_category.append(f'Data {j.capitalize()}')
-        except:
-          job_category.append(np.NaN)
+      try:
+        ctr_name.append(item[0])
+      except:
+        ctr_name.append(np.NaN)
+
+      try:
+        jobCategory.append(f'Data {j.capitalize()}')
+      except:
+        jobCategory.append(np.NaN)
+  print('finished')
 
 
 df = pd.DataFrame({"jobPostingId":jobPostingId,
                   "companyName": company_name,
-                   "country":ctr_name,
-                   "jobCategory": job_category})
+                   "ctr_name":ctr_name,
+                   "jobCategory": jobCategory})
 
 
-len(jobPostingId)
+print(len(jobPostingId), len(company_name),len(ctr_name),len(jobCategory))
 
 df = df.loc[df['jobPostingId'].notnull()]
 df['jobPostingId'] = df['jobPostingId'].apply(np.int64)
 
 df.head()
 
-
+df[df['jobPostingId'] == '3545532447']
 
 #######################################
 
@@ -108,6 +111,11 @@ jobs_details3.head()
 
 
 cols_dtype = sqlcol(jobs_details3)
-# df_timestamp.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace', index=False, dtype=cols_dtype)
+jobs_details3.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace', index=False, dtype=cols_dtype)
 jobs_details3.to_sql(name='linkedinJobs', con=engine, index=False, if_exists='append',  dtype=cols_dtype)
 print("Dataframe Sent to Datab se Succesfully")
+
+
+import pandas as pd
+sql = """select * from "linkedinJobs";"""
+linkedinJobs_database = pd.read_sql(sql,con=engine)
