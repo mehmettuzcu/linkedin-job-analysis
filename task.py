@@ -8,7 +8,7 @@ print(f"""
 Start Time: {begin}
 """)
 
-def daily(loop=500):
+def daily(loop=25):
     try:
         jobId = scrap_jobPostingId(loop)
         print("Jobs Posting Id Scraping is Succesfully")
@@ -24,6 +24,7 @@ def daily(loop=500):
 
     try:
         df_timestamp = timestamp_convert(df_detail)
+        print( f'data lenght {len(df_timestamp)}')
         # df_timestamp.columns = df_timestamp.columns.str.replace('.', '_')
         print("Timestamp converting is Succesfully")
     except Exception as e:
