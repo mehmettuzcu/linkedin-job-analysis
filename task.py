@@ -33,7 +33,7 @@ def daily(loop=25):
     try:
         engine.connect()
         cols_dtype = sqlcol(df_timestamp)
-        # df_timestamp.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace', index=False, dtype=cols_dtype)
+        df_timestamp.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace', index=False, dtype=cols_dtype)
         df_timestamp.to_sql(name='linkedinJobs', con=engine, index=False, if_exists='append',  dtype=cols_dtype)
 
         print("Dataframe Sent to Datab se Succesfully")
