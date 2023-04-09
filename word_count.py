@@ -9,6 +9,8 @@ import pandas as pd
 from PIL import Image
 from nltk.corpus import stopwords
 from config import *
+from sqlalchemy import create_engine
+import sqlalchemy
 
 
 filterwarnings('ignore')
@@ -19,6 +21,7 @@ pd.set_option('display.float_format', lambda x: '%.2f' % x)
 ##############################################
 # 1. Text Preprocessing
 ##################################################
+
 sql = """select * from "linkedinJobs";"""
 df = pd.read_sql(sql,con=engine)
 df.drop_duplicates(keep='first', subset=['jobPostingId'], inplace=True)
