@@ -62,11 +62,17 @@ df = df.loc[df['jobPostingId'].notnull()]
 df['jobPostingId'] = df['jobPostingId'].apply(np.int64)
 df[df['jobPostingId'] == '3545532447']
 
+<<<<<<< HEAD
 sql = """select "jobPostingId" from "linkedinJobs";"""
 sqldf = pd.read_sql(sql,con=engine)
 sqldf.drop_duplicates(keep='first', subset=['jobPostingId'], inplace=True)
 ids = sqldf["jobPostingId"].to_list()
 df = df[~df['jobPostingId'].isin(ids)]
+=======
+df.head()
+
+df[df['jobPostingId'] == '3545532447']
+>>>>>>> 0996c22 (modified)
 
 #######################################
 
@@ -117,3 +123,8 @@ cols_dtype = sqlcol(jobs_details3)
 jobs_details3.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace', index=False, dtype=cols_dtype)
 jobs_details3.to_sql(name='linkedinJobs', con=engine, index=False, if_exists='append',  dtype=cols_dtype)
 print("Dataframe Sent to Datab se Succesfully")
+
+
+import pandas as pd
+sql = """select * from "linkedinJobs";"""
+linkedinJobs_database = pd.read_sql(sql,con=engine)

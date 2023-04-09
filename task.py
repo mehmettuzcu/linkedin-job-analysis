@@ -8,15 +8,16 @@ print(f"""
 Start Time: {begin}
 """)
 
-def daily(loop=500):
+def daily(loop=25):
     try:
-        jobId = scrap_jobPostingId(loop)
+        jobId_ = scrap_jobPostingId(loop)
         print("Jobs Posting Id Scraping is Succesfully")
     except Exception as e:
+        print(e)
         print("Jobs Posting Id Scraping is Error")
 
     try:
-        df_detail = job_details(jobId)
+        df_detail = job_details(jobId_)
         print("Jobs Detail Scraping is Succesfully")
     except Exception as e:
         print("Jobs Detail Scraping is Error")
@@ -35,15 +36,15 @@ def daily(loop=500):
         cols_dtype = sqlcol(df_timestamp)
         df_timestamp.head(n=0).to_sql(name='linkedinJobs', con=engine, if_exists='replace', index=False, dtype=cols_dtype)
         df_timestamp.to_sql(name='linkedinJobs', con=engine, index=False, if_exists='append',  dtype=cols_dtype)
-
-        print("Dataframe Sent to Datab se Succesfully")
+        print(f'Data lenght: {len(df_timestamp)}')
+        print("Dataframe Sent to Databse Succesfully")
     except Exception as e:
+        print(e)
         print("Dataframe Sent to Database Error!")
 
     return df_timestamp
 
 if __name__ == "__main__":
-
         daily()
         end = datetime.now()
         print(f"""
