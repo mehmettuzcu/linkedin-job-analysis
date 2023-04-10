@@ -4,8 +4,6 @@ linkedin_data
 logs
 plugins
 .env
-<<<<<<< HEAD
 config_.py
-=======
 config.py
->>>>>>> 0996c22 (modified)
+words.xlsx

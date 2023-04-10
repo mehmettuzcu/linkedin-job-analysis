@@ -8,9 +8,11 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 from nltk.corpus import stopwords
-from config import *
+#from config import *
 from sqlalchemy import create_engine
 import sqlalchemy
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 filterwarnings('ignore')
@@ -74,5 +76,23 @@ tf["words"].nunique()
 tf["tf"].describe([0.05, 0.10, 0.25, 0.50, 0.75, 0.80, 0.90, 0.95, 0.99]).T
 tf.head()
 tf.sort_values(by='tf', ascending=False).head(300)
-tf[tf['tf'] > 50].sort_values(by='tf', ascending=False)
+len(tf[tf['tf'] > 50].sort_values(by='tf', ascending=False))
 tf[tf['words'] == 'gcp']
+
+# tf[tf['tf'] > 50].sort_values(by='tf', ascending=False).to_excel('words.xlsx', index=False)
+
+words = pd.read_excel("words.xlsx")
+df_merge = words.merge(tf, how = "left",
+                               on=['words'])
+
+df_merge['tf'] = df_merge['tf'].apply(np.int64)
+df_merge[df_merge['tf'] > 50].sort_values(by='tf', ascending=False)
+
+
+fig = plt.figure(figsize = (10, 5))
+plt.bar(df_merge['words'], df_merge['tf'], color ='maroon', width = 0.4)
+
+plt.xlabel("Required")
+plt.ylabel("Counts")
+plt.title("Data Engineer Words")
+plt.show()
