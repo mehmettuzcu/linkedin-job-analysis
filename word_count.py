@@ -55,7 +55,8 @@ df['description_text'] = df['description_text'].str.replace('\d', '')
 #nltk.download('stopwords')
 sw = stopwords.words('english')
 df['description_text'] = df['description_text'].apply(lambda x: " ".join(x for x in str(x).split() if x not in sw))
-df.head()
+
+df['description_text'] = df['description_text'].apply(lambda x: " ".join(set(x.split())))
 ###############################
 # Rarewords
 ###############################
@@ -77,7 +78,7 @@ tf["tf"].describe([0.05, 0.10, 0.25, 0.50, 0.75, 0.80, 0.90, 0.95, 0.99]).T
 tf.head()
 tf.sort_values(by='tf', ascending=False).head(300)
 len(tf[tf['tf'] > 50].sort_values(by='tf', ascending=False))
-tf[tf['words'] == 'gcp']
+tf[tf['words'] == 'amazon']
 
 # tf[tf['tf'] > 50].sort_values(by='tf', ascending=False).to_excel('words.xlsx', index=False)
 
@@ -87,12 +88,3 @@ df_merge = words.merge(tf, how = "left",
 
 df_merge['tf'] = df_merge['tf'].apply(np.int64)
 df_merge[df_merge['tf'] > 50].sort_values(by='tf', ascending=False)
-
-
-fig = plt.figure(figsize = (10, 5))
-plt.bar(df_merge['words'], df_merge['tf'], color ='maroon', width = 0.4)
-
-plt.xlabel("Required")
-plt.ylabel("Counts")
-plt.title("Data Engineer Words")
-plt.show()
