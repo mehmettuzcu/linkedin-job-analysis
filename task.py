@@ -8,7 +8,7 @@ print(f"""
 Start Time: {begin}
 """)
 
-def daily(loop=25):
+def daily(loop=200):
     try:
         jobId_ = scrap_jobPostingId(loop)
         print("Jobs Posting Id Scraping is Succesfully")

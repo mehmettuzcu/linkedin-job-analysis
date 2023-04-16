@@ -1,5 +1,5 @@
 ##################################################
-# Text Mining and Natural Language Processing
+# Text Mining
 ##################################################
 
 from warnings import filterwarnings
@@ -35,18 +35,20 @@ df.info()
 ###############################
 
 df['description_text'] = df['description_text'].str.lower()
-
+df['title'] = df['title'].str.lower()
 ###############################
 # Punctuations
 ###############################
 
 df['description_text'] = df['description_text'].str.replace('[^\w\s]', '')
+df['title'] = df['title'].str.replace('[^\w\s]', '')
 
 ###############################
 # Numbers
 ###############################
 
 df['description_text'] = df['description_text'].str.replace('\d', '')
+df['title'] = df['title'].str.replace('\d', '')
 
 ###############################
 # Stopwords
@@ -55,6 +57,7 @@ df['description_text'] = df['description_text'].str.replace('\d', '')
 #nltk.download('stopwords')
 sw = stopwords.words('english')
 df['description_text'] = df['description_text'].apply(lambda x: " ".join(x for x in str(x).split() if x not in sw))
+df['title'] = df['title'].apply(lambda x: " ".join(x for x in str(x).split() if x not in sw))
 
 df['description_text'] = df['description_text'].apply(lambda x: " ".join(set(x.split())))
 ###############################
@@ -64,6 +67,9 @@ df['description_text'] = df['description_text'].apply(lambda x: " ".join(set(x.s
 drops = pd.Series(' '.join(df['description_text']).split()).value_counts()[-20:]
 df['description_text'] = df['description_text'].apply(lambda x: " ".join(x for x in x.split() if x not in drops))
 
+df = df[df['title'].str.contains('data engineer')]
+df.head(30)
+df.info()
 ###############################
 # Terim Frekanslarının Hesaplanması
 ###############################

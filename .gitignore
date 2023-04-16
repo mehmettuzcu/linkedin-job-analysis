@@ -7,3 +7,4 @@ plugins
 config_.py
 config.py
 words.xlsx
+__pycache__
