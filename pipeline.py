@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 import warnings
 import sqlalchemy
 from sqlalchemy import create_engine
-import os
+import os, re
 import argparse
 from config import *
 
@@ -18,74 +18,41 @@ pd.set_option('display.max_rows', None)
 
 ################## jobPostingId #######################
 
-def scrap_jobPostingId(loop=500):
+def scrap_jobPostingId(loop=25):
     jobPostingId = []
     company_name= []
     loop_number = loop
     ctr_name = []
     job_category = []
+    pattern = r'\(([^,]*)\,'
     for item in country.items():
-      for i in range(0, loop_number, 25):
-        response = requests.get(
-            f'https://www.linkedin.com/voyager/api/search/hits?decorationId=com.linkedin.voyager.deco.jserp.WebJobSearchHitWithSalary-25&count=25&filters=List({item[1]},resultType-%3EJOBS)&keywords=data%20engineer&origin=JOB_SEARCH_PAGE_OTHER_ENTRY&q=jserpFilters&queryContext=List(primaryHitType-%3EJOBS,spellCorrectionEnabled-%3Etrue)&start={i}&skip={i}&topNRequestedFlavors=List(HIDDEN_GEM,IN_NETWORK,SCHOOL_RECRUIT,COMPANY_RECRUIT,SALARY,JOB_SEEKER_QUALIFIED,PRE_SCREENING_QUESTIONS,SKILL_ASSESSMENTS,ACTIVELY_HIRING_COMPANY,TOP_APPLICANT)'
-            , cookies=cookies, headers=headers)
-        data = response.json()
-        for i in range(0,25):
-          try:
-            jobPostingId.append(data['elements'][i]['hitInfo']['com.linkedin.voyager.deco.jserp.WebSearchJobJserpWithSalary']['jobPostingResolutionResult']['jobPostingId'])
-          except:
-            jobPostingId.append(np.NaN)
-
-          try:
-            company_name.append(data['elements'][i]['hitInfo']['com.linkedin.voyager.deco.jserp.WebSearchJobJserpWithSalary']['jobPostingResolutionResult']['companyDetails']['com.linkedin.voyager.deco.jserp.WebJobPostingWithCompanyName']['companyResolutionResult']['name'])
-          except:
-            company_name.append(np.NaN)
-
-          try:
-            ctr_name.append(item[0])
-          except:
-            ctr_name.append(np.NaN)
-
-          try:
-            job_category.append(f'Data Engineer')
-          except:
-            job_category.append(np.NaN)
-      # print('finished')
-
         for i in range(0, loop_number, 25):
             response = requests.get(
-            f'https://www.linkedin.com/voyager/api/search/hits?decorationId=com.linkedin.voyager.deco.jserp.WebJobSearchHitWithSalary-25&count=25&filters=List({item[1]},resultType-%3EJOBS)&keywords=data%20engineer&origin=JOB_SEARCH_PAGE_OTHER_ENTRY&q=jserpFilters&queryContext=List(primaryHitType-%3EJOBS,spellCorrectionEnabled-%3Etrue)&start={i}&skip={i}&topNRequestedFlavors=List(HIDDEN_GEM,IN_NETWORK,SCHOOL_RECRUIT,COMPANY_RECRUIT,SALARY,JOB_SEEKER_QUALIFIED,PRE_SCREENING_QUESTIONS,SKILL_ASSESSMENTS,ACTIVELY_HIRING_COMPANY,TOP_APPLICANT)'
-            , cookies=cookies, headers=headers)
+                f'https://www.linkedin.com/voyager/api/voyagerJobsDashJobCards?decorationId=com.linkedin.voyager.dash.deco.jobs.search.JobSearchCardsCollection-192&count=25&q=jobSearch&query=(origin:JOB_SEARCH_PAGE_KEYWORD_HISTORY,keywords:data%20engineer,locationUnion:(geoId:{item[1]}),selectedFilters:(distance:List(25)),spellCorrectionEnabled:true)&start={i}&skip={i}',
+                cookies=cookies, headers=headers)
             data = response.json()
-            # print(response.status_code)
-            for i in range(0,25):
+            #print(response.status_code)
+            for i in range(0, 25):
                 try:
-                  jobPostingId.append(data['elements'][i]['hitInfo']['com.linkedin.voyager.deco.jserp.WebSearchJobJserpWithSalary']['jobPostingResolutionResult']['jobPostingId'])
+                    jobPostingId.append(
+                        re.findall(pattern, data['elements'][i]['jobCardUnion']['jobPostingCard']['entityUrn'])[0])
                 except:
-                  jobPostingId.append(np.NaN)
-
+                    jobPostingId.append(np.NaN)
                 try:
-                  company_name.append(data['elements'][i]['hitInfo']['com.linkedin.voyager.deco.jserp.WebSearchJobJserpWithSalary']['jobPostingResolutionResult']['companyDetails']['com.linkedin.voyager.deco.jserp.WebJobPostingWithCompanyName']['companyResolutionResult']['name'])
+                    ctr_name.append(item[0])
                 except:
-                  company_name.append(np.NaN)
-
+                    ctr_name.append(np.NaN)
                 try:
-                  ctr_name.append(item[0])
+                    job_category.append(f'Data Engineer')
                 except:
-                  ctr_name.append(np.NaN)
-
-                try:
-                  job_category.append(f'Data Engineer')
-                except:
-                  job_category.append(np.NaN)
-
+                    job_category.append(np.NaN)
+        #print('finished')
 
     dataframe = pd.DataFrame({"jobPostingId":jobPostingId,
-                      "companyName": company_name,
                        "country":ctr_name,
                        "jobCategory": job_category})
-    
-    
+
+    dataframe = dataframe.drop_duplicates('jobPostingId', keep='first')
     dataframe = dataframe.loc[dataframe['jobPostingId'].notnull()]
     dataframe['jobPostingId'] = dataframe['jobPostingId'].apply(np.int64)
 
@@ -96,28 +63,29 @@ def scrap_jobPostingId(loop=500):
     dataframe = dataframe[~dataframe['jobPostingId'].isin(ids)]
     return dataframe
 
-# jobId = scrap_jobPostingId(25)
+#jobId = scrap_jobPostingId(25)
 
 ################## Jobs Details #######################
 
 
 def job_details(dataframe):
     detail_data = pd.DataFrame()
-
     for i in dataframe['jobPostingId']:
-      try:
-        response2 = requests.get(f'https://www.linkedin.com/voyager/api/jobs/jobPostings/{i}', cookies=cookies2, headers=headers2)
-      except:
-        print("error")
-      data2 = response2.json()
-      # print(data)
-      # print(response.status_code)
-
-      try:
-        dataframe_data = pd.json_normalize(data2['data'])
-        detail_data = detail_data.append(dataframe_data[['jobPostingId', 'title',  'localizedCostPerApplicantChargeableRegion',  'originalListedAt', 'expireAt', 'createdAt', 'listedAt', 'views', 'applies', 'formattedLocation', 'jobPostingUrl', 'jobState', 'formattedEmploymentStatus',  'description.text' ]])
-      except:
-        print("Request Error")
+        try:
+            response = requests.get(f'https://www.linkedin.com/voyager/api/jobs/jobPostings/{i}', cookies=cookies2,
+                                    headers=headers2)
+            data2 = response.json()
+        except:
+            print("Request Error")
+        try:
+            df_data = pd.json_normalize(data2['data'])
+            detail_data = detail_data._append(
+                df_data[['jobPostingId', 'title', 'localizedCostPerApplicantChargeableRegion',
+                         'originalListedAt', 'expireAt', 'createdAt', 'listedAt', 'views',
+                         'applies', 'formattedLocation', 'jobPostingUrl', 'jobState',
+                         'formattedEmploymentStatus', 'description.text']], ignore_index=True)
+        except:
+            pass
 
     detail_data['applies'] = detail_data['applies'].apply(lambda x : str(x))
     detail_data = detail_data[detail_data['applies'] != 'None']
@@ -140,4 +108,4 @@ def timestamp_convert(dataframe):
     dataframe[col]= pd.to_datetime(dataframe[col])
 
   return dataframe
-# df_timestamp = timestamp_convert(df_detail)
+#df_timestamp = timestamp_convert(df_detail)
